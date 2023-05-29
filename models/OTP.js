@@ -32,4 +32,4 @@ OTPSchema.pre("save", async(next) => {
     next()
 })
 
-module.exports = mongoose.model("OTP ",OTPSchema) 
+module.exports = mongoose.model("OTP",OTPSchema) 
