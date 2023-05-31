@@ -8,10 +8,10 @@ const tagSchema = mongoose.Schema({
     decription: {
         type: String
     },
-    course: {
+    course: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Course " 
-    } 
+    }]
 })
 
 module.exports = mongoose.model("Tag",tagSchema) 
