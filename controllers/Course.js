@@ -2,6 +2,7 @@ const Course = require("../models/Course");
 const Category = require("../models/Category");
 const User = require("../models/User");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
+
 // Function to create a new course
 exports.createCourse = async (req, res) => {
 	try {
@@ -149,4 +150,46 @@ exports.getAllCourses = async (req, res) => {
 	}
 };
 
-//getCourseDetails
+exports.getCourseDetails = async(req,res) => {
+    try{
+        const {courseId} = req.body
+        if(!courseId){
+            return res.json({
+                success: false,
+                message: `Please Provide courseId`,
+            });
+        }
+        const courseDetail = await Course.find({_id:courseId})
+                                         .populate({
+                                            path: "instructor",
+                                            populate:{
+                                                path: "additionalDetails"
+                                            }
+                                         })
+                                         .populate({
+                                            path: "courseContent",
+                                            populate:{
+                                                path: "subSection"
+                                            }
+                                         })
+                                         .populate("category")
+                                         .populate("ratingAndReviews")
+                                         .exec()
+                                                
+        if(!courseDetail) {
+            return res.status(400).json({
+                success: false,
+                message: `No Course with this Id`,
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            courseDetail
+        });
+    } catch(e) {
+        return res.status(500).json({
+            success: false,
+            message: "ERROR While Fetching All Courses"
+        });
+    }
+}
